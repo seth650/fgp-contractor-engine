@@ -42,11 +42,13 @@ export const CONTRACTORS = [
 ];
 
 export const NETWORK = [
-  { label: "Member contractors", value: "160", note: "last 30 days" },
-  { label: "Orders through the engine", value: "$110,360", note: "sample" },
-  { label: "Resin in those orders", value: "$48,000", note: "sample" },
-  { label: "Quotes on FGP systems", value: "94%", note: "sample" },
+  { label: "Member contractors", value: "160", note: "last 30 days", spark: [96, 104, 110, 118, 126, 132, 141, 148, 154, 160] },
+  { label: "Orders through the engine", value: "$110,360", note: "sample", spark: [42, 48, 51, 60, 66, 74, 81, 90, 98, 110] },
+  { label: "Resin in those orders", value: "$48,000", note: "sample", spark: [22, 24, 26, 28, 31, 33, 36, 40, 44, 48] },
+  { label: "Quotes on FGP systems", value: "94%", note: "sample", spark: [71, 74, 76, 79, 82, 84, 86, 89, 91, 94] },
 ];
+
+export const ORDER_SPARK = [18, 22, 19, 28, 26, 34, 31, 40, 38, 46];
 
 export const LOCATIONS = [
   { name: "Floorgard Midwest", amount: 18420 },
