@@ -21,11 +21,65 @@ export const KITS = [
 
 export const COLORS = ["Domino", "Gravel", "Nightfall", "Shoreline", "Creekbed", "Tidal"];
 
+/** Store order lifecycle */
+export const ORDER_STATUSES = [
+  "NEW ORDER",
+  "MATERIALS STAGED",
+  "PICKUP SCHEDULED",
+  "PAID",
+];
+
 export const STORE_ORDERS = [
-  { id: "FG-1042", contractor: "Mike Russell", job: "Russell garage", system: "FGP Flake", total: 1120.8, status: "Ready to pick", when: "Today 2:40 PM" },
-  { id: "FG-1038", contractor: "Dana Cole", job: "Cole basement", system: "FGP Solid", total: 864.2, status: "Approved quote", when: "Today 11:15 AM" },
-  { id: "FG-1031", contractor: "Luis Ortega", job: "Ortega showroom", system: "FGP Metallic", total: 2140, status: "Invoiced", when: "Yesterday" },
-  { id: "FG-1026", contractor: "Amy Chen", job: "Chen patio", system: "FGP Flake", total: 990.5, status: "Pickup 4 PM", when: "Yesterday" },
+  {
+    id: "FG-1042",
+    contractor: "Mike Russell",
+    job: "Russell garage",
+    system: "FGP Flake",
+    total: 1120.8,
+    status: "NEW ORDER",
+    when: "Today 2:40 PM",
+    pickupAt: null,
+  },
+  {
+    id: "FG-1043",
+    contractor: "Mike Russell",
+    job: "Russell patio",
+    system: "FGP Flake",
+    total: 640.5,
+    status: "NEW ORDER",
+    when: "Today 3:05 PM",
+    pickupAt: null,
+  },
+  {
+    id: "FG-1038",
+    contractor: "Dana Cole",
+    job: "Cole basement",
+    system: "FGP Solid",
+    total: 864.2,
+    status: "MATERIALS STAGED",
+    when: "Today 11:15 AM",
+    pickupAt: null,
+  },
+  {
+    id: "FG-1031",
+    contractor: "Luis Ortega",
+    job: "Ortega showroom",
+    system: "FGP Metallic",
+    total: 2140,
+    status: "PICKUP SCHEDULED",
+    when: "Yesterday",
+    pickupAt: "Tomorrow 4:00 PM",
+  },
+  {
+    id: "FG-1026",
+    contractor: "Amy Chen",
+    job: "Chen patio",
+    system: "FGP Flake",
+    total: 990.5,
+    status: "PAID",
+    when: "Yesterday",
+    pickupAt: "Yesterday 4:00 PM",
+  },
 ];
 
 export const PICK = [
@@ -35,10 +89,10 @@ export const PICK = [
 ];
 
 export const CONTRACTORS = [
-  { name: "Mike Russell", tier: "Preferred", jobs: 6 },
-  { name: "Dana Cole", tier: "Contractor", jobs: 3 },
-  { name: "Luis Ortega", tier: "Small buyer", jobs: 2 },
-  { name: "Amy Chen", tier: "MSRP", jobs: 1 },
+  { name: "Mike Russell", tier: "Gold", jobs: 6 },
+  { name: "Dana Cole", tier: "Silver", jobs: 3 },
+  { name: "Luis Ortega", tier: "Bronze", jobs: 2 },
+  { name: "Amy Chen", tier: "Bronze", jobs: 1 },
 ];
 
 export const NETWORK = [
@@ -51,11 +105,11 @@ export const NETWORK = [
 export const ORDER_SPARK = [18, 22, 19, 28, 26, 34, 31, 40, 38, 46];
 
 export const LOCATIONS = [
-  { name: "Floorgard Midwest", amount: 18420 },
-  { name: "Floorgard Pittsburgh", amount: 14210 },
-  { name: "Floorgard Chicago", amount: 12180 },
-  { name: "Floorgard Ohio", amount: 9860 },
-  { name: "Floorgard Indiana", amount: 7420 },
+  { name: "FloorGuard Midwest", amount: 18420 },
+  { name: "FloorGuard Pittsburgh", amount: 14210 },
+  { name: "FloorGuard Chicago", amount: 12180 },
+  { name: "FloorGuard Ohio", amount: 9860 },
+  { name: "FloorGuard Indiana", amount: 7420 },
 ];
 
 export const PRODUCTS = [

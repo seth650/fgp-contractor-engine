@@ -1,27 +1,38 @@
 # Floorguard Contractor Engine
 
-A separate preview of the Floorguard version of ECOS. The live ECOS app in the `ECOS` folder was not changed, and this project is not deployed.
+Floorguard-branded MVP next to the live ECOS app. **ECOS was not changed.**
 
-Open it locally:
+## Run
 
 ```
 npm install
 npm run dev
 ```
 
-The screen has three roles, matching the pitch: **The contractor**, **The store**, and **Floorgard**. Numbers are sample data from that pitch, not store records.
+Open the Vite URL (usually http://127.0.0.1:5173).
 
-## What this is
+## What’s in this MVP
 
-The visual backbone for a Floorguard-branded product: quotes on Floorguard systems, price and margin before the quote goes out, a material order sent to the contractor's store, a store inbox with a pick list, and a corporate network view.
+### Contractor (Free)
+- Pitch-style phone flow: **visual stack → price/margin → material order**
+- Unlocked systems: outdoor flake (`FLK-OD-RES`) and indoor residential flake (`FLK-ID-RES`)
+- Moisture under the stack updates the base layer live; base coat and flake are selectable
+- Kit math matches ECOS (including **1.10 gallon buffer** on order qty)
+- Locked systems/finishes open **Plans** with Stripe sandbox upgrade UI
 
-## What this is not yet
+### Store / Floorgard
+- Sample Midwest inbox, pick list from the live quote, contractor tiers
+- Corporate network sample with legal note (no cross-distributor customer snooping)
 
-- It does not replace the live ECOS calculator. Kit math, membership, and Stripe stay in ECOS until we port them on purpose.
-- Wholesale prices are not in here. Those wait on the price book Floorguard agrees to.
-- GoHighLevel, QuickBooks, websites, and Floorguard University are not connected. Those are later doors, not part of this preview.
-- The brand guide asks for Geist and Bertioga Sans. This preview uses Inter until those font files are added.
+### Stripe sandbox
+- Set `VITE_API_BASE_URL` to your sandbox API host and provide a demo access token (`fgp_demo_access_token`) to hit real Checkout
+- Without that, Upgrade still applies a **local sandbox unlock** so demos keep moving
 
-## Corporate view
+## Next wave
+- Floorguard-branded quote/invoice screens (ServiceM8-inspired fields, not clones)
+- Brand Settings: logo + 2 dominant colors on those docs
 
-The Floorgard role is meant for Floorguard itself, so they can see orders and systems across their locations. It should not let one distributor, or Dynasty, see another distributor's customers unless Floorguard's agreement says so. This preview uses sample figures only.
+## Not yet
+- Production deploy / epoxyquoting.com switch
+- Full Estimator crew-days production path
+- GHL / QBO / Floorguard University

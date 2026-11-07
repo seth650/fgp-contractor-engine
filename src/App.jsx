@@ -1,25 +1,21 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import FreeCalculator from "./FreeCalculator.jsx";
 import {
-  COLORS,
   CONTRACTORS,
-  JOB,
-  KITS,
   LOCATIONS,
   NETWORK,
   ORDER_SPARK,
-  PICK,
+  ORDER_STATUSES,
   PRODUCTS,
   STORE_ORDERS,
-  jobCost,
-  margin,
   money,
 } from "./data.js";
 import "./App.css";
 
-const ROLES = [
-  { id: "contractor", label: "Contractor", blurb: "Quote the Floorguard system, see the margin, then send the material order." },
-  { id: "store", label: "Store", blurb: "One inbox for approved quotes, pick lists, pickup, and that contractor's price tier." },
-  { id: "floorgard", label: "Floorgard", blurb: "Orders and member contractors across locations. These figures are samples from the pitch." },
+const MODES = [
+  { id: "calculator", label: "Contractor", blurb: "Quote FloorGuard systems, see margin, send the material order." },
+  { id: "store", label: "Store", blurb: "Orders, pick lists, pickup, and buying tiers for this location." },
+  { id: "floorguard", label: "FloorGuard", blurb: "Network sample across locations. Corporate view only — sample figures." },
 ];
 
 const STORE_NAV = [
@@ -28,7 +24,7 @@ const STORE_NAV = [
   ["people", "Contractors"],
 ];
 
-const STATUSES = ["All", "Ready to pick", "Approved quote", "Invoiced", "Pickup 4 PM"];
+const STATUSES = ["All", ...ORDER_STATUSES];
 
 function Spark({ values }) {
   const max = Math.max(...values);
@@ -48,74 +44,131 @@ function Spark({ values }) {
   );
 }
 
-function Phone({ caption, children }) {
-  return (
-    <figure className="device">
-      <div className="phone">
-        <div className="notch" aria-hidden="true"><i /></div>
-        <div className="screen">
-          <header className="screen-head">
-            <span>Floorguard</span>
-            <strong>Products</strong>
-          </header>
-          <div className="screen-body">{children}</div>
-        </div>
-      </div>
-      <figcaption>{caption}</figcaption>
-    </figure>
-  );
+function statusTone(status) {
+  const key = String(status || "").toUpperCase();
+  if (key.startsWith("NEW")) return "new";
+  if (key.startsWith("MATERIALS")) return "staged";
+  if (key.startsWith("PICKUP")) return "pickup";
+  if (key.startsWith("PAID")) return "paid";
+  return "new";
 }
 
 export default function App() {
-  const [role, setRole] = useState("contractor");
+  const [mode, setMode] = useState("calculator");
   const [panel, setPanel] = useState("orders");
-  const [color, setColor] = useState(COLORS[0]);
-  const [quoted, setQuoted] = useState(false);
-  const [sent, setSent] = useState(false);
-  const [invoiced, setInvoiced] = useState(false);
-  const [toast, setToast] = useState("");
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState("All");
-  const profit = margin();
+  const [toast, setToast] = useState("");
+  const [liveOrder, setLiveOrder] = useState(null);
+  const [orders, setOrders] = useState(STORE_ORDERS);
   const maxLocation = Math.max(...LOCATIONS.map((row) => row.amount));
-  const roleMeta = ROLES.find((item) => item.id === role);
-  const kits = KITS.map((kit) => (
-    kit.name === "Decorative flake" ? { ...kit, detail: `${color} blend` } : kit
-  ));
-  const storeTotal = STORE_ORDERS.reduce((sum, row) => sum + row.total, 0);
-  const visibleOrders = STORE_ORDERS.filter((row) => {
+  const modeMeta = MODES.find((item) => item.id === mode);
+
+  const displayOrders = useMemo(
+    () =>
+      orders.map((row) => {
+        if (row.id !== "FG-1042" || !liveOrder) return row;
+        return {
+          ...row,
+          contractor: liveOrder.customerName || row.contractor,
+          job: liveOrder.jobName || row.job,
+          system: liveOrder.results?.system?.code || liveOrder.systemKey || row.system,
+          total: liveOrder.results?.totals?.totalTier ?? row.total,
+          status: row.status === "PAID" || row.status === "MATERIALS STAGED" || row.status === "PICKUP SCHEDULED"
+            ? row.status
+            : "NEW ORDER",
+          when: "Just now",
+          lines: liveOrder.results?.orderLines || null,
+        };
+      }),
+    [orders, liveOrder]
+  );
+
+  const storeTotal = displayOrders.reduce((sum, row) => sum + row.total, 0);
+  const visibleOrders = displayOrders.filter((row) => {
     const haystack = `${row.id} ${row.contractor} ${row.job} ${row.system}`.toLowerCase();
     const matchesQuery = haystack.includes(query.trim().toLowerCase());
     const matchesStatus = status === "All" || row.status === status;
     return matchesQuery && matchesStatus;
   });
 
+  const newOrderGroups = useMemo(() => {
+    const fresh = displayOrders.filter((row) => row.status === "NEW ORDER");
+    const map = new Map();
+    fresh.forEach((row) => {
+      if (!map.has(row.contractor)) map.set(row.contractor, []);
+      map.get(row.contractor).push(row);
+    });
+    return [...map.entries()].map(([contractor, jobs]) => ({ contractor, jobs }));
+  }, [displayOrders]);
+
   useEffect(() => {
     if (!toast) return undefined;
-    const timer = setTimeout(() => setToast(""), 3200);
+    const timer = setTimeout(() => setToast(""), 3600);
     return () => clearTimeout(timer);
   }, [toast]);
 
-  function chooseRole(next) {
-    setRole(next);
-    setPanel(next === "floorgard" ? "network" : "orders");
+  function chooseMode(next) {
+    setMode(next);
+    setPanel(next === "floorguard" ? "network" : "orders");
+  }
+
+  function openStoreFromCalculator(payload) {
+    setLiveOrder(payload);
+    setOrders((prev) =>
+      prev.map((row) =>
+        row.id === "FG-1042"
+          ? {
+              ...row,
+              status: "NEW ORDER",
+              when: "Just now",
+              contractor: payload.customerName || row.contractor,
+              job: payload.jobName || row.job,
+            }
+          : row
+      )
+    );
+    setMode("store");
+    setPanel(payload?.focusPick ? "pick" : "orders");
+    setToast(payload?.focusPick ? "Pick list shows NEW ORDER jobs." : "FG-1042 landed as NEW ORDER.");
+  }
+
+  function invoiceAndStage(orderIds) {
+    setOrders((prev) =>
+      prev.map((row) =>
+        orderIds.includes(row.id) ? { ...row, status: "MATERIALS STAGED", when: "Just now" } : row
+      )
+    );
+    setToast(
+      `Invoice + mark staged · ${orderIds.join(", ")}. Contractor email/SMS notify via GHL + Twilio (DK) next.`
+    );
   }
 
   return (
     <div className="app">
+      <div className="brand-accent" aria-hidden="true" />
       <header className="top">
         <div>
-          <div className="eyebrow">Floorguard Contractor Engine</div>
-          <h1>{roleMeta.label}</h1>
-          <p>{roleMeta.blurb}</p>
+          <div className="brand-row">
+            <img
+              className="brand-logo"
+              src="/brand/fgp-logo-red.png"
+              alt="FloorGuard Products"
+            />
+            <div>
+              <div className="eyebrow">Contractor Engine</div>
+              <h1>{modeMeta.label}</h1>
+            </div>
+          </div>
+          <p>{modeMeta.blurb}</p>
         </div>
-        <div className="roles" role="tablist" aria-label="Choose a login">
-          {ROLES.map((item) => (
+        <div className="roles" role="tablist" aria-label="Choose a view">
+          {MODES.map((item) => (
             <button
               key={item.id}
               type="button"
-              className={role === item.id ? "role on" : "role"}
-              onClick={() => chooseRole(item.id)}
+              className={mode === item.id ? "role on" : "role"}
+              onClick={() => chooseMode(item.id)}
             >
               {item.label}
             </button>
@@ -123,112 +176,39 @@ export default function App() {
         </div>
       </header>
 
-      {role === "contractor" && (
-        <section className="studio" aria-label="Contractor phones">
-          <Phone caption="System and kit count">
-            <div className="kicker">System</div>
-            <h2>{JOB.system}</h2>
-            <p className="muted">{JOB.place} · {JOB.sqft} sq ft · {JOB.customer}</p>
-            <div className="swatches">
-              {COLORS.map((name) => (
-                <button key={name} type="button" className={color === name ? "swatch on" : "swatch"} onClick={() => setColor(name)}>
-                  <i data-color={name} />
-                  {name}
-                </button>
-              ))}
-            </div>
-            <ul className="lines">
-              {kits.map((kit) => (
-                <li key={kit.name}>
-                  <div>
-                    <strong>{kit.name}</strong>
-                    <span>{kit.detail}</span>
-                  </div>
-                  <b>{kit.qty}</b>
-                </li>
-              ))}
-            </ul>
-          </Phone>
+      {mode === "calculator" && <FreeCalculator onOpenStore={openStoreFromCalculator} />}
 
-          <Phone caption="Price and margin">
-            <div className="kicker">Customer price</div>
-            <div className="price">{money(JOB.price)}</div>
-            <p className="muted">{JOB.system} · {color}</p>
-            <dl>
-              <div><dt>Materials</dt><dd>{money(JOB.materials)}</dd></div>
-              <div><dt>Crew, 4 hours</dt><dd>{money(JOB.crew)}</dd></div>
-              <div><dt>Consumables</dt><dd>{money(JOB.consumables)}</dd></div>
-              <div><dt>Travel</dt><dd>{money(JOB.travel)}</dd></div>
-              <div className="total"><dt>Job cost</dt><dd>{money(jobCost())}</dd></div>
-            </dl>
-            <div className="margin-line">
-              <span>Margin</span>
-              <strong>{profit.pct.toFixed(2)}%</strong>
-              <em>{money(profit.dollars)}</em>
-            </div>
-            <button
-              className="primary"
-              type="button"
-              onClick={() => {
-                setQuoted(true);
-                setToast(`Quote of ${money(JOB.price)} is ready for ${JOB.customer}.`);
-              }}
-            >
-              {quoted ? "Quote ready" : `Send quote to ${JOB.customer.split(" ")[0]}`}
-            </button>
-          </Phone>
-
-          <Phone caption="Material order">
-            <div className="kicker">To the store</div>
-            <div className="price">{money(JOB.resinOrder)}</div>
-            <p className="muted">Floorguard resin and kits for {JOB.place}. This is the part of the {money(JOB.price)} quote that the store fulfills.</p>
-            <ul className="lines">
-              {kits.map((kit) => (
-                <li key={kit.name}>
-                  <div><strong>{kit.name}</strong><span>{kit.detail}</span></div>
-                  <b>{kit.qty}</b>
-                </li>
-              ))}
-            </ul>
-            <button
-              className="primary"
-              type="button"
-              disabled={sent}
-              onClick={() => {
-                setSent(true);
-                setToast("Sent to Floorgard Midwest. It shows in the store inbox as FG-1042.");
-              }}
-            >
-              {sent ? "Sent to Floorgard Midwest" : "Send to Floorgard Midwest"}
-            </button>
-          </Phone>
-        </section>
-      )}
-
-      {role !== "contractor" && (
+      {mode !== "calculator" && (
         <section className="laptop">
           <aside>
             <div className="mark">
-              <span>Floorguard</span>
-              <strong>{role === "store" ? "Midwest" : "Network"}</strong>
+              <img src="/brand/fgp-logo-white.svg" alt="FloorGuard Products" className="aside-logo" />
+              <strong>{mode === "store" ? "Midwest" : "Network"}</strong>
             </div>
             <nav>
-              {(role === "store" ? STORE_NAV : [["network", "Network"], ["locations", "Locations"], ["products", "Products"]]).map(([id, label]) => (
-                <button key={id} type="button" className={panel === id ? "nav on" : "nav"} onClick={() => setPanel(id)}>
-                  {label}
-                </button>
-              ))}
+              {(mode === "store" ? STORE_NAV : [["network", "Network"], ["locations", "Locations"], ["products", "Products"]]).map(
+                ([id, label]) => (
+                  <button key={id} type="button" className={panel === id ? "nav on" : "nav"} onClick={() => setPanel(id)}>
+                    {label}
+                  </button>
+                )
+              )}
             </nav>
-            <p>Sample data. The live ECOS app is unchanged.</p>
+            <p>
+              {mode === "store"
+                ? "Store role: this location’s orders only. Buying tiers stay on the contractor account."
+                : "FloorGuard corporate sample. One distributor does not see another’s customers."}
+            </p>
           </aside>
 
           <div className="desk">
-            {role === "store" && panel === "orders" && (
+            {mode === "store" && panel === "orders" && (
               <>
                 <div className="desk-head">
                   <div>
                     <div className="kicker">Orders</div>
                     <h2>One inbox for the store</h2>
+                    <p className="muted">NEW ORDER → MATERIALS STAGED → PICKUP SCHEDULED → PAID</p>
                   </div>
                   <div className="stat-block">
                     <strong>{money(storeTotal)}</strong>
@@ -252,81 +232,133 @@ export default function App() {
                 </div>
                 <table>
                   <thead>
-                    <tr><th>Order</th><th>Contractor</th><th>Job</th><th>System</th><th>When</th><th>Status</th><th>Total</th></tr>
+                    <tr>
+                      <th>Order</th>
+                      <th>Contractor</th>
+                      <th>Job</th>
+                      <th>System</th>
+                      <th>When</th>
+                      <th>Status</th>
+                      <th>Total</th>
+                    </tr>
                   </thead>
                   <tbody>
                     {visibleOrders.map((row) => (
-                      <tr key={row.id} className={sent && row.id === "FG-1042" ? "fresh" : ""}>
+                      <tr key={row.id} className={row.id === "FG-1042" && liveOrder ? "fresh" : ""}>
                         <td>{row.id}</td>
                         <td>{row.contractor}</td>
                         <td>{row.job}</td>
                         <td>{row.system}</td>
                         <td>{row.when}</td>
-                        <td><span className={`pill tone-${row.status.split(" ")[0].toLowerCase()}`}>{row.status}</span></td>
+                        <td>
+                          <span className={`pill tone-${statusTone(row.status)}`}>{row.status}</span>
+                        </td>
                         <td>{money(row.total)}</td>
                       </tr>
                     ))}
                     {visibleOrders.length === 0 && (
-                      <tr><td colSpan="7" className="empty">No orders match that search.</td></tr>
+                      <tr>
+                        <td colSpan="7" className="empty">
+                          No orders match that search.
+                        </td>
+                      </tr>
                     )}
                   </tbody>
                 </table>
               </>
             )}
 
-            {role === "store" && panel === "pick" && (
-              <div className="grid-2">
-                <article>
-                  <div className="kicker">Pick list · FG-1042</div>
-                  <h2>{JOB.place}</h2>
-                  <p className="muted">Pickup today, counter. Built from the approved quote. Flake color: {color}.</p>
-                  <ul className="lines">
-                    {PICK.map((row) => (
-                      <li key={row.item}>
+            {mode === "store" && panel === "pick" && (
+              <>
+                <div className="desk-head">
+                  <div>
+                    <div className="kicker">Pick list</div>
+                    <h2>NEW ORDER jobs ready to stage</h2>
+                    <p className="muted">Grouped by contractor. Invoice + mark staged notifies them (GHL/Twilio next).</p>
+                  </div>
+                </div>
+                {newOrderGroups.length === 0 && <p className="muted">No NEW ORDER jobs right now.</p>}
+                <div className="contractor-cards">
+                  {newOrderGroups.map((group) => (
+                    <article key={group.contractor} className="contractor-card">
+                      <header>
                         <div>
-                          <strong>{row.item.includes("Flake") ? `Flake blend — ${color}` : row.item}</strong>
-                          <span>Bin {row.bin}</span>
+                          <strong>{group.contractor}</strong>
+                          <span>{group.jobs.length} job{group.jobs.length === 1 ? "" : "s"} · NEW ORDER</span>
                         </div>
-                        <b>{row.qty}</b>
-                      </li>
-                    ))}
-                  </ul>
-                </article>
-                <article>
-                  <div className="kicker">Next</div>
-                  <h2>Invoice in one click</h2>
-                  <p className="muted">The contractor's buying tier is already on the order. QuickBooks comes later. This button is a preview.</p>
-                  <button
-                    className="primary"
-                    type="button"
-                    onClick={() => {
-                      setInvoiced(true);
-                      setToast(invoiced ? "Invoice preview is still a sample." : "Invoice preview created for FG-1042.");
-                    }}
-                  >
-                    {invoiced ? "Invoice preview ready" : "Create invoice"}
-                  </button>
-                </article>
-              </div>
+                        <button
+                          type="button"
+                          className="primary tight"
+                          onClick={() => invoiceAndStage(group.jobs.map((j) => j.id))}
+                        >
+                          Invoice + mark staged
+                        </button>
+                      </header>
+                      <ul className="job-cards">
+                        {group.jobs.map((job) => (
+                          <li key={job.id}>
+                            <div>
+                              <strong>
+                                {job.id} · {job.job}
+                              </strong>
+                              <span>
+                                {job.system} · {money(job.total)}
+                              </span>
+                            </div>
+                            <button type="button" className="ghost tight" onClick={() => invoiceAndStage([job.id])}>
+                              Stage this job
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                      {group.contractor === (liveOrder?.customerName || "Mike Russell") && liveOrder?.results?.orderLines && (
+                        <ul className="lines pick-detail">
+                          {liveOrder.results.orderLines.map((line, index) => (
+                            <li key={`${line.product}-${index}`}>
+                              <div>
+                                <strong>{line.product}</strong>
+                                <span>Bin {["A-12", "C-04", "A-18", "B-02", "D-11"][index % 5]}</span>
+                              </div>
+                              <b>
+                                {line.qty} × {line.kitSize}
+                              </b>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </article>
+                  ))}
+                </div>
+              </>
             )}
 
-            {role === "store" && panel === "people" && (
+            {mode === "store" && panel === "people" && (
               <>
                 <div className="kicker">Your contractors</div>
                 <h2>Buying tier sits on the account</h2>
-                <p className="muted">The distributor sets the tier. Wholesale numbers wait until Floorguard confirms the price book.</p>
+                <p className="muted">Distributor sets Bronze / Silver / Gold. Wholesale numbers wait on FloorGuard’s price book.</p>
                 <table>
-                  <thead><tr><th>Contractor</th><th>Tier</th><th>Open jobs</th></tr></thead>
+                  <thead>
+                    <tr>
+                      <th>Contractor</th>
+                      <th>Buying tier</th>
+                      <th>Open jobs</th>
+                    </tr>
+                  </thead>
                   <tbody>
                     {CONTRACTORS.map((row) => (
-                      <tr key={row.name}><td>{row.name}</td><td>{row.tier}</td><td>{row.jobs}</td></tr>
+                      <tr key={row.name}>
+                        <td>{row.name}</td>
+                        <td>{row.tier}</td>
+                        <td>{row.jobs}</td>
+                      </tr>
                     ))}
                   </tbody>
                 </table>
               </>
             )}
 
-            {role === "floorgard" && panel === "network" && (
+            {mode === "floorguard" && panel === "network" && (
               <>
                 <div className="kpis">
                   {NETWORK.map((item) => (
@@ -346,7 +378,9 @@ export default function App() {
                       {LOCATIONS.map((row) => (
                         <li key={row.name}>
                           <span>{row.name}</span>
-                          <div><i style={{ width: `${(row.amount / maxLocation) * 100}%` }} /></div>
+                          <div>
+                            <i style={{ width: `${(row.amount / maxLocation) * 100}%` }} />
+                          </div>
                           <b>{money(row.amount)}</b>
                         </li>
                       ))}
@@ -357,16 +391,25 @@ export default function App() {
                     <h2>What contractors are selling</h2>
                     <ul className="lines">
                       {PRODUCTS.map((row) => (
-                        <li key={row.name}><div><strong>{row.name}</strong><span>Share of sample quotes</span></div><b>{row.share}</b></li>
+                        <li key={row.name}>
+                          <div>
+                            <strong>{row.name}</strong>
+                            <span>Share of sample quotes</span>
+                          </div>
+                          <b>{row.share}</b>
+                        </li>
                       ))}
                     </ul>
                   </article>
                 </div>
-                <p className="legal">This view is for Floorguard corporate, so one distributor does not see another's customers. The numbers are sample figures from the pitch.</p>
+                <p className="legal">
+                  Corporate admin tools are coming. This view stays FloorGuard-corporate — not one store peeking at another’s customers —
+                  unless a written agreement says otherwise.
+                </p>
               </>
             )}
 
-            {role === "floorgard" && panel === "locations" && (
+            {mode === "floorguard" && panel === "locations" && (
               <article>
                 <div className="kicker">Orders by location</div>
                 <h2>All sixteen would live here</h2>
@@ -374,7 +417,9 @@ export default function App() {
                   {LOCATIONS.map((row) => (
                     <li key={row.name}>
                       <span>{row.name}</span>
-                      <div><i style={{ width: `${(row.amount / maxLocation) * 100}%` }} /></div>
+                      <div>
+                        <i style={{ width: `${(row.amount / maxLocation) * 100}%` }} />
+                      </div>
                       <b>{money(row.amount)}</b>
                     </li>
                   ))}
@@ -382,13 +427,19 @@ export default function App() {
               </article>
             )}
 
-            {role === "floorgard" && panel === "products" && (
+            {mode === "floorguard" && panel === "products" && (
               <article>
                 <div className="kicker">Systems in quotes</div>
-                <h2>Which Floorguard systems are being sold</h2>
+                <h2>Which FloorGuard systems are being sold</h2>
                 <ul className="lines">
                   {PRODUCTS.map((row) => (
-                    <li key={row.name}><div><strong>{row.name}</strong><span>Share of sample quotes</span></div><b>{row.share}</b></li>
+                    <li key={row.name}>
+                      <div>
+                        <strong>{row.name}</strong>
+                        <span>Share of sample quotes</span>
+                      </div>
+                      <b>{row.share}</b>
+                    </li>
                   ))}
                 </ul>
               </article>
@@ -397,7 +448,11 @@ export default function App() {
         </section>
       )}
 
-      {toast && <div className="toast" role="status">{toast}</div>}
+      {toast && (
+        <div className="toast" role="status">
+          {toast}
+        </div>
+      )}
     </div>
   );
 }

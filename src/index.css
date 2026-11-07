@@ -1,24 +1,53 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=Barlow+Condensed:wght@600;700;800&display=swap");
+
 :root {
-  --bg: #eef2f6;
-  --ink: #121826;
+  /* Material / Apple-aligned 8pt scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 40px;
+  --space-8: 48px;
+  --touch: 44px; /* Apple HIG minimum control */
+  --ring: 3px;
+  --ring-gap: 8px; /* padding around selected controls so rings never collide */
+
+  --bg: #e8eef5;
+  --bg-deep: #d9e2ee;
+  --ink: #0e1c3a;
   --muted: #5c6b7d;
-  --line: #e3e8ef;
+  --line: #d7e0ea;
   --white: #ffffff;
   --navy: #0e1c3a;
   --navy-2: #16315f;
   --red: #e23b32;
   --red-deep: #c42c24;
-  --chip: #f4f7fb;
+  --chip: #f3f6fa;
   --good: #157a45;
-  --shadow: 0 18px 50px rgba(16, 24, 40, 0.08);
-  font-family: Inter, "Segoe UI", sans-serif;
+  --gold: #c9a227;
+  --shadow: 0 18px 50px rgba(14, 28, 58, 0.1);
+  --shadow-soft: 0 10px 30px rgba(14, 28, 58, 0.06);
+  --font: "DM Sans", "Segoe UI", sans-serif;
+  --display: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --radius-pill: 999px;
+  font-family: var(--font);
   color: var(--ink);
-  background: var(--bg);
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(226, 59, 50, 0.08), transparent 55%),
+    radial-gradient(900px 500px at 100% 0%, rgba(22, 49, 95, 0.12), transparent 50%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg-deep) 100%);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
 * { box-sizing: border-box; }
 html, body, #root { margin: 0; min-height: 100%; }
-button, input { font: inherit; }
+button, input, select { font: inherit; }
 button { cursor: pointer; }
+img { max-width: 100%; display: block; }
