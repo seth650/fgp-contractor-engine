@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import PlansModal from "./PlansModal.jsx";
+import { buildQuotePdfBlobUrl } from "./quotePdf.js";
 import {
   BASE_COAT_COLOR_OPTIONS,
   BASE_PRODUCT_OPTIONS,
@@ -116,6 +117,8 @@ export default function FreeCalculator({ onOpenStore, membershipTier: membership
   const [customDeposit, setCustomDeposit] = useState("");
   const [workOrderScope, setWorkOrderScope] = useState("");
   const [quotePreviewOpen, setQuotePreviewOpen] = useState(false);
+  const [showPdfPreview, setShowPdfPreview] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState("");
 
   const isFree = membershipTier === "free";
   const buying = BUYING_TIERS[buyingTier] || BUYING_TIERS.bronze;
@@ -387,7 +390,12 @@ export default function FreeCalculator({ onOpenStore, membershipTier: membership
               }
             >
               <div className="job-head">
-                <strong className="customer-name">{customerName || "Customer"}</strong>
+                <strong
+                  className="customer-name"
+                  style={{ fontFamily: '"Montserrat", "Segoe UI", sans-serif', fontWeight: 700, fontStyle: "normal" }}
+                >
+                  {customerName || "Customer"}
+                </strong>
                 <span>
                   {jobName || "Job"} · {sqFt || "—"} ft² · moisture {answers.moisture || "—"}
                 </span>
@@ -1168,7 +1176,12 @@ export default function FreeCalculator({ onOpenStore, membershipTier: membership
             <div className="quote-doc-head">
               <div>
                 <span>Quote for</span>
-                <h3 className="customer-name">{customerName}</h3>
+                <h3
+                  className="customer-name"
+                  style={{ fontFamily: '"Montserrat", "Segoe UI", sans-serif', fontWeight: 700, fontStyle: "normal" }}
+                >
+                  {customerName}
+                </h3>
                 <p className="muted">
                   {jobName} · {new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
                 </p>
@@ -1222,8 +1235,57 @@ export default function FreeCalculator({ onOpenStore, membershipTier: membership
               <span>Floorguard Certified Installer · trained on FGP systems</span>
             </div>
 
+            <div className="quote-pdf-toggle">
+              <button
+                type="button"
+                className={showPdfPreview ? "chip on" : "chip"}
+                onClick={() => {
+                  if (showPdfPreview) {
+                    setShowPdfPreview(false);
+                    return;
+                  }
+                  if (pdfUrl) URL.revokeObjectURL(pdfUrl);
+                  const url = buildQuotePdfBlobUrl({
+                    customerName,
+                    jobName,
+                    dateLabel: new Date().toLocaleDateString("en-US", {
+                      month: "long",
+                      day: "numeric",
+                      year: "numeric",
+                    }),
+                    sellPrice,
+                    sf: results.totals.sf,
+                    color: answers.color,
+                    baseCoatColor: answers.baseCoatColor,
+                    deposit,
+                    depositLabel,
+                    balanceDue,
+                    scope: workOrderScope.trim(),
+                  });
+                  setPdfUrl(url);
+                  setShowPdfPreview(true);
+                }}
+              >
+                {showPdfPreview ? "Hide PDF preview" : "Show PDF preview"}
+              </button>
+              <p className="hint micro">Optional — see the PDF file the customer gets.</p>
+            </div>
+
+            {showPdfPreview && pdfUrl ? (
+              <div className="quote-pdf-frame-wrap">
+                <iframe title="Quote PDF preview" className="quote-pdf-frame" src={pdfUrl} />
+              </div>
+            ) : null}
+
             <div className="action-row quote-actions">
-              <button type="button" className="ghost" onClick={() => setQuotePreviewOpen(false)}>
+              <button
+                type="button"
+                className="ghost"
+                onClick={() => {
+                  setQuotePreviewOpen(false);
+                  setShowPdfPreview(false);
+                }}
+              >
                 Close preview
               </button>
               <button
@@ -1232,6 +1294,7 @@ export default function FreeCalculator({ onOpenStore, membershipTier: membership
                 disabled={!scopeFilled}
                 onClick={() => {
                   setQuotePreviewOpen(false);
+                  setShowPdfPreview(false);
                   const first = customerName.split(" ")[0] || "customer";
                   setToast(`Quote sent to ${first} via ${quoteChannel}.`);
                   setStep("order");

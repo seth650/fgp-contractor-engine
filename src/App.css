@@ -417,11 +417,13 @@ h3 { font-size: 18px; letter-spacing: -0.02em; font-weight: 700; }
 
 .customer-name,
 .job-head .customer-name,
+.quote-doc-head h3,
 .quote-doc-head h3.customer-name {
   font-family: "Montserrat", "Segoe UI", sans-serif !important;
   font-weight: 700 !important;
   font-style: normal !important;
   letter-spacing: -0.02em;
+  font-synthesis: none;
 }
 
 .field-grid {
@@ -855,28 +857,30 @@ h3 { font-size: 18px; letter-spacing: -0.02em; font-weight: 700; }
 .quote-pl-footer {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-top: var(--space-4);
+  gap: 14px;
+  margin-top: var(--space-5);
   margin-bottom: var(--space-3);
-  padding: 10px 12px;
-  border: 1px dashed #d9d0c4;
-  border-radius: 12px;
-  background: #fcfbf9;
+  padding: 0;
+  border: none;
+  background: transparent;
 }
 
 .quote-pl-badge {
-  width: 44px;
-  height: 44px;
-  object-fit: contain;
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 50%;
   flex-shrink: 0;
-  opacity: 0.92;
+  background: transparent;
+  filter: drop-shadow(0 8px 18px rgba(14, 28, 58, 0.16));
 }
 
 .quote-pl-footer span {
-  color: #7a7268;
-  font-size: 11px;
+  color: #6b655c;
+  font-size: 12px;
   font-weight: 600;
-  line-height: 1.35;
+  line-height: 1.4;
+  max-width: 12rem;
 }
 
 .quote-finish-strip {
@@ -937,13 +941,32 @@ h3 { font-size: 18px; letter-spacing: -0.02em; font-weight: 700; }
 .quote-doc-head h3 {
   margin-top: var(--space-2);
   text-transform: none;
-  font-family: var(--font);
   font-size: 22px;
-  font-weight: 700;
 }
 
 .quote-doc-head h3.customer-name {
   font-size: 22px;
+}
+
+.quote-pdf-toggle {
+  margin: 0 var(--space-5) var(--space-3);
+}
+
+.quote-pdf-frame-wrap {
+  margin: 0 var(--space-5) var(--space-4);
+  border: 1px solid #ebe4da;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f3f0ea;
+  min-height: 320px;
+}
+
+.quote-pdf-frame {
+  width: 100%;
+  height: min(52vh, 420px);
+  border: 0;
+  display: block;
+  background: #ffffff;
 }
 
 .quote-doc-total {
