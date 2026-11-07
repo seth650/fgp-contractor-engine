@@ -75,7 +75,7 @@ function PhoneShell({ title, children, footer }) {
         <div className="phone-screen">
           <header className="phone-brand">
             <img src="/brand/fgp-mark-white.png" alt="FloorGuard Products" className="phone-logo" />
-            <span>Contractor tools</span>
+            <strong>FloorGuard</strong>
           </header>
           <div className="phone-scroll">{children}</div>
           {footer ? <div className="phone-footer">{footer}</div> : null}
@@ -306,11 +306,10 @@ export default function FreeCalculator({ onOpenStore, membershipTier: membership
     <div className="contractor-stage">
       <div className="stage-intro">
         <div>
-          <div className="eyebrow">Contractor · Free MVP</div>
+          <div className="eyebrow">Contractor</div>
           <h1>Quote the FloorGuard system</h1>
           <p>
-            Visual stack, price and margin, then material order — outdoor flake and indoor residential flake unlocked on Free.
-            Other systems open with Calculator.
+            Build the system, set price and margin, then send the material order. Free unlocks outdoor and indoor residential flake.
           </p>
         </div>
         <div className="tier-pair">
@@ -807,7 +806,7 @@ export default function FreeCalculator({ onOpenStore, membershipTier: membership
                       const first = customerName.split(" ")[0] || "customer";
                       const via =
                         quoteChannel === "email" ? "email" : quoteChannel === "link" ? "share link" : "text";
-                      setToast(`Sandbox: quote ${via} queued for ${first}.`);
+                      setToast(`Quote sent to ${first} via ${via}.`);
                       setStep("order");
                     }}
                   >
@@ -918,9 +917,7 @@ export default function FreeCalculator({ onOpenStore, membershipTier: membership
                     </button>
                   ))}
                 </div>
-                <p className="hint micro">
-                  Live text/email wiring comes with Estimator + GHL/Twilio. This sandbox stages the handoff.
-                </p>
+                <p className="hint micro">Text and email delivery connect in the next release.</p>
               </div>
             </PhoneShell>
           )}
@@ -1148,7 +1145,7 @@ export default function FreeCalculator({ onOpenStore, membershipTier: membership
         membershipTier={membershipTier}
         onSandboxUpgrade={(tier) => {
           setMembership(tier);
-          setToast(tier === "tier2" ? "Estimator sandbox unlocked." : "Calculator sandbox unlocked — all 8 systems open.");
+          setToast(tier === "tier2" ? "Estimator unlocked." : "Calculator unlocked — all 8 systems open.");
         }}
       />
 
@@ -1159,8 +1156,8 @@ export default function FreeCalculator({ onOpenStore, membershipTier: membership
             <div className="quote-doc-brandbar">
               <img src="/brand/fgp-logo-red.png" alt="FloorGuard Products" className="quote-doc-logo" />
               <div>
-                <span>Prepared with FloorGuard systems</span>
-                <strong>Contractor proposal</strong>
+                <span>FloorGuard Products</span>
+                <strong>Project quote</strong>
               </div>
             </div>
 
@@ -1212,9 +1209,7 @@ export default function FreeCalculator({ onOpenStore, membershipTier: membership
               <p>{workOrderScope.trim() || "— add rooms on the quote screen —"}</p>
             </div>
 
-            <p className="hint micro">
-              Branded customer PDF / portal polish continues tomorrow — this preview is the handoff layout.
-            </p>
+            <p className="hint micro">Customer-facing PDF export comes next.</p>
             <div className="action-row">
               <button type="button" className="ghost" onClick={() => setQuotePreviewOpen(false)}>
                 Close preview
@@ -1226,7 +1221,7 @@ export default function FreeCalculator({ onOpenStore, membershipTier: membership
                 onClick={() => {
                   setQuotePreviewOpen(false);
                   const first = customerName.split(" ")[0] || "customer";
-                  setToast(`Sandbox: quote queued for ${first} via ${quoteChannel}.`);
+                  setToast(`Quote sent to ${first} via ${quoteChannel}.`);
                   setStep("order");
                 }}
               >

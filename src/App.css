@@ -55,15 +55,15 @@
 
 h1, h2, h3 {
   margin: 0;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
   font-family: var(--display);
   font-weight: 700;
   text-transform: none;
 }
 
-h1 { font-size: clamp(32px, 4.6vw, 44px); line-height: 1.05; margin-top: var(--space-1); }
-h2 { font-size: 26px; line-height: 1.15; }
-h3 { font-size: 20px; letter-spacing: -0.015em; font-weight: 700; }
+h1 { font-size: clamp(30px, 4.2vw, 40px); line-height: 1.1; margin-top: var(--space-1); font-weight: 800; }
+h2 { font-size: 24px; line-height: 1.2; font-weight: 700; }
+h3 { font-size: 18px; letter-spacing: -0.02em; font-weight: 700; }
 
 .top p, .muted { color: var(--muted); line-height: 1.5; }
 .top p { max-width: 520px; margin: var(--space-2) 0 0; }
@@ -350,10 +350,11 @@ h3 { font-size: 20px; letter-spacing: -0.015em; font-weight: 700; }
 .phone-brand {
   background: linear-gradient(180deg, var(--navy) 0%, #122647 100%);
   color: white;
-  padding: var(--space-4);
+  padding: 12px var(--space-4);
   border-bottom: 4px solid var(--red);
-  display: grid;
-  gap: var(--space-2);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
 }
 
 .phone-logo {
@@ -362,15 +363,15 @@ h3 { font-size: 20px; letter-spacing: -0.015em; font-weight: 700; }
   object-fit: contain;
   display: block;
   border-radius: 8px;
+  flex-shrink: 0;
 }
 
-.phone-brand span {
-  display: block;
-  color: #ffb4ae;
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+.phone-brand strong {
+  font-family: var(--font);
+  font-size: 14px;
   font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #ffffff;
 }
 
 .phone-scroll {
@@ -394,8 +395,15 @@ h3 { font-size: 20px; letter-spacing: -0.015em; font-weight: 700; }
   margin-bottom: var(--space-4);
 }
 
-.job-head strong { display: block; font-size: 18px; }
-.job-head span { color: var(--muted); font-size: 13px; margin-top: var(--space-1); display: block; }
+.job-head strong {
+  display: block;
+  font-family: var(--name);
+  font-size: 26px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+.job-head span { color: var(--muted); font-size: 13px; margin-top: var(--space-1); display: block; font-weight: 500; }
 
 .field-grid {
   display: grid;
@@ -606,10 +614,10 @@ h3 { font-size: 20px; letter-spacing: -0.015em; font-weight: 700; }
 .locked-row em { color: var(--gold); font-style: normal; white-space: nowrap; }
 
 .price-hero {
-  font-family: var(--display);
-  font-size: 56px;
-  font-weight: 700;
-  letter-spacing: -0.03em;
+  font-family: var(--font);
+  font-size: 52px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
   line-height: 1;
   margin: 8px 0 4px;
 }
@@ -765,9 +773,10 @@ h3 { font-size: 20px; letter-spacing: -0.015em; font-weight: 700; }
 .quote-doc-brandbar strong {
   display: block;
   margin-top: 2px;
-  font-family: var(--display);
-  font-size: 22px;
-  font-weight: 400;
+  font-family: var(--font);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .quote-doc.branded .quote-doc-head,
@@ -838,14 +847,16 @@ h3 { font-size: 20px; letter-spacing: -0.015em; font-weight: 700; }
 .quote-doc-head h3 {
   margin-top: var(--space-2);
   text-transform: none;
-  font-family: var(--font);
-  font-size: 24px;
+  font-family: var(--name);
+  font-size: 28px;
+  font-weight: 400;
 }
 
 .quote-doc-total {
-  font-family: var(--display);
-  font-size: 36px;
-  letter-spacing: -0.03em;
+  font-family: var(--font);
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
   line-height: 1;
   white-space: nowrap;
 }
@@ -1021,8 +1032,8 @@ h3 { font-size: 20px; letter-spacing: -0.015em; font-weight: 700; }
   margin-top: var(--space-3);
   padding-top: var(--space-3);
   border-top: 3px solid var(--red);
-  font-size: 24px;
-  font-family: var(--display);
+  font-size: 20px;
+  font-family: var(--font);
   font-weight: 700;
   letter-spacing: -0.02em;
   text-transform: none;

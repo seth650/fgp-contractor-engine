@@ -62,11 +62,7 @@ export default function PlansModal({ open, onClose, onSandboxUpgrade, membership
       // Local sandbox demo path — looks like a real upgrade for Floorguard walkthroughs.
       await new Promise((r) => setTimeout(r, 700));
       onSandboxUpgrade?.(product === "estimator" ? "tier2" : "tier1");
-      setNote(
-        apiBase
-          ? "Sandbox unlock applied locally. Sign in with a Stripe-wired session to open live Checkout."
-          : "Sandbox unlock applied. Wire VITE_API_BASE_URL + session to hit real Stripe Checkout."
-      );
+      setNote(apiBase ? "Plan unlocked. Connect checkout when Stripe is live." : "Plan unlocked for this preview.");
       setTimeout(() => onClose?.(), 900);
     } catch (e) {
       setNote(e?.message || "Could not start checkout.");
@@ -80,7 +76,7 @@ export default function PlansModal({ open, onClose, onSandboxUpgrade, membership
       <div className="plans-sheet" onClick={(e) => e.stopPropagation()}>
         <header className="plans-head">
           <div>
-            <div className="kicker">Floorguard · Stripe sandbox</div>
+            <div className="kicker">Membership</div>
             <h2>Unlock more systems</h2>
             <p className="muted">Free includes outdoor flake and indoor residential flake. Upgrade opens the rest.</p>
           </div>

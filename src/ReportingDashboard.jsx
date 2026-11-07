@@ -149,10 +149,8 @@ export default function ReportingDashboard({ view = "network" }) {
       <div className="report-toolbar">
         <div>
           <div className="kicker tight">Network reporting</div>
-          <h2>{view === "products" ? "Products & systems" : view === "locations" ? "Distributor map" : "FloorGuard pulse"}</h2>
-          <p className="muted">
-            Sample wholesale through Nov 7, 2026 · shaped from public FloorGuard scale (~product distribution network) + Midwest mix. Not live ERP.
-          </p>
+          <h2>{view === "products" ? "Products & systems" : view === "locations" ? "Distributors" : "Network overview"}</h2>
+          <p className="muted">Year-to-date through Nov 7, 2026 · preview figures for walkthroughs.</p>
         </div>
         <div className="report-controls">
           <div className="period-pills" role="tablist" aria-label="Time range">
@@ -168,7 +166,7 @@ export default function ReportingDashboard({ view = "network" }) {
               </button>
             ))}
           </div>
-          <em className={`autosave ${savedFlash ? "on" : ""}`}>{savedFlash ? "Dashboard saved" : "Autosaves to this browser"}</em>
+          <em className={`autosave ${savedFlash ? "on" : ""}`}>{savedFlash ? "Saved" : "Filters remembered"}</em>
         </div>
       </div>
 
@@ -311,8 +309,7 @@ export default function ReportingDashboard({ view = "network" }) {
       </div>
 
       <p className="legal">
-        Corporate sample only. One distributor does not see another’s customers. Live Square / ERP wiring comes next —
-        prefs above already stick in this browser so each login feels like their dashboard.
+        Network view is FloorGuard corporate only — distributors do not see each other’s customers.
       </p>
     </div>
   );
