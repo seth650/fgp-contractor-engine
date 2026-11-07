@@ -1228,7 +1228,7 @@ export default function FreeCalculator({ onOpenStore, membershipTier: membership
 
             <div className="quote-pl-footer">
               <img
-                src="/brand/fgp-certified-installer.png"
+                src="/brand/fgp-certified-badge.png"
                 alt="Floorguard Certified Installer"
                 className="quote-pl-badge"
               />
