@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 72" fill="none" role="img" aria-label="Ridgeline Coatings">
+  <g fill="#C48D57">
+    <path d="M8 52 L28 18 L42 36 L52 24 L72 52 Z"/>
+    <path d="M20 52 L36 28 L48 42 L58 30 L74 52 Z" opacity="0.55"/>
+  </g>
+  <text x="92" y="34" fill="#111111" font-family="Montserrat, Arial, sans-serif" font-size="28" font-weight="800" letter-spacing="1.5">RIDGELINE</text>
+  <line x1="92" y1="46" x2="118" y2="46" stroke="#C48D57" stroke-width="1.5"/>
+  <text x="126" y="50" fill="#111111" font-family="Montserrat, Arial, sans-serif" font-size="12" font-weight="600" letter-spacing="4">COATINGS</text>
+  <line x1="232" y1="46" x2="258" y2="46" stroke="#C48D57" stroke-width="1.5"/>
+</svg>

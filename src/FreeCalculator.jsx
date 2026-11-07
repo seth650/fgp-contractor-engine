@@ -73,9 +73,9 @@ function PhoneShell({ title, children, footer }) {
       <div className="phone-bezel">
         <div className="phone-notch" aria-hidden="true" />
         <div className="phone-screen">
-          <header className="phone-brand">
-            <img src="/brand/fgp-mark-white.png" alt="FloorGuard Products" className="phone-logo" />
-            <strong>FloorGuard</strong>
+          <header className="phone-brand phone-brand-red">
+            <img src="/brand/fgp-mark-white.png" alt="" className="phone-logo" />
+            <strong>Floorguard Products</strong>
           </header>
           <div className="phone-scroll">{children}</div>
           {footer ? <div className="phone-footer">{footer}</div> : null}
@@ -1151,28 +1151,33 @@ export default function FreeCalculator({ onOpenStore, membershipTier: membership
 
       {quotePreviewOpen && results && (
         <div className="lightbox" onClick={() => setQuotePreviewOpen(false)} role="dialog" aria-modal="true">
-          <div className="lightbox-card quote-doc branded" onClick={(e) => e.stopPropagation()}>
-            <div className="quote-doc-accent" aria-hidden="true" />
-            <div className="quote-doc-brandbar">
-              <img src="/brand/fgp-logo-red.png" alt="FloorGuard Products" className="quote-doc-logo" />
-              <div>
-                <span>FloorGuard Products</span>
-                <strong>Project quote</strong>
+          <div className="lightbox-card quote-doc ridgeline" onClick={(e) => e.stopPropagation()}>
+            <div className="quote-doc-topline" aria-hidden="true">
+              <span>Showroom quality floors</span>
+              <span>Limited lifetime warranty</span>
+              <span>Locally owned since 2016</span>
+            </div>
+
+            <div className="quote-doc-brandbar ridgeline-bar">
+              <img src="/brand/ridgeline-mark.svg" alt="Ridgeline Coatings" className="quote-doc-logo ridgeline-logo" />
+              <div className="quote-doc-contact">
+                <strong>Lexington, KY</strong>
+                <span>(859) 555-0148</span>
               </div>
             </div>
 
             <div className="quote-doc-head">
               <div>
-                <span>Prepared for</span>
+                <span>Quote for</span>
                 <h3 className="customer-name">{customerName}</h3>
                 <p className="muted">
                   {jobName} · {new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
                 </p>
               </div>
-              <strong className="quote-doc-total">{money(sellPrice)}</strong>
+              <strong className="quote-doc-total ridgeline-total">{money(sellPrice)}</strong>
             </div>
 
-            <div className="quote-finish-strip">
+            <div className="quote-finish-strip ridgeline-strip">
               <div className="quote-swatch" style={{ background: STOCKED_COLORS.find((c) => c.value === answers.color)?.hex || "#888" }} />
               <div className="quote-swatch base" style={{ background: BASE_COAT_COLOR_OPTIONS.find((c) => c.value === answers.baseCoatColor)?.hex || "#ccc" }} />
               <div>
@@ -1180,14 +1185,14 @@ export default function FreeCalculator({ onOpenStore, membershipTier: membership
                   {answers.color} on {answers.baseCoatColor}
                 </strong>
                 <span>
-                  {results.system.code} · {results.system.label || "Flake system"} · {results.totals.sf} ft²
+                  Decorative flake floor · {results.totals.sf} ft²
                 </span>
               </div>
             </div>
 
             <div className="quote-doc-grid">
               <div>
-                <span>Investment</span>
+                <span>Project total</span>
                 <strong>{money(sellPrice)}</strong>
               </div>
               <div>
@@ -1195,28 +1200,36 @@ export default function FreeCalculator({ onOpenStore, membershipTier: membership
                 <strong>{money(sellPrice / (results.totals.sf || 1))}</strong>
               </div>
               <div>
-                <span>Deposit ({depositLabel})</span>
+                <span>Deposit due ({depositLabel})</span>
                 <strong>{money(deposit)}</strong>
               </div>
               <div>
-                <span>Balance at completion</span>
+                <span>Due at completion</span>
                 <strong>{money(balanceDue)}</strong>
               </div>
             </div>
 
-            <div className="quote-doc-scope">
-              <span>Work order scope</span>
-              <p>{workOrderScope.trim() || "— add rooms on the quote screen —"}</p>
+            <div className="quote-doc-scope ridgeline-scope">
+              <span>Work included</span>
+              <p>{workOrderScope.trim() || "Add the rooms / areas in scope on the quote screen."}</p>
             </div>
 
-            <p className="hint micro">Customer-facing PDF export comes next.</p>
-            <div className="action-row">
+            <div className="quote-pl-footer">
+              <img
+                src="/brand/fgp-certified-installer.png"
+                alt="Floorguard Certified Installer"
+                className="quote-pl-badge"
+              />
+              <span>Floorguard Certified Installer · trained on FGP systems</span>
+            </div>
+
+            <div className="action-row quote-actions">
               <button type="button" className="ghost" onClick={() => setQuotePreviewOpen(false)}>
                 Close preview
               </button>
               <button
                 type="button"
-                className="primary"
+                className="primary ridgeline-cta"
                 disabled={!scopeFilled}
                 onClick={() => {
                   setQuotePreviewOpen(false);
