@@ -1,4 +1,5 @@
 import { jsPDF } from "jspdf";
+import { buildExtraBlocks } from "./quoteExtras.js";
 
 const RIDGE = [196, 141, 87];
 const INK = [17, 17, 17];
@@ -8,6 +9,7 @@ const CREAM = [247, 242, 235];
 const CREAM_2 = [250, 247, 242];
 const RED = [226, 59, 50];
 const PAGE = [255, 255, 255];
+const GREYED = [210, 204, 196];
 
 function money(n) {
   return `$${Number(n || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -251,6 +253,104 @@ export async function buildQuotePdfBlobUrl({
   doc.setDrawColor(...LINE);
   doc.setLineWidth(1);
   doc.line(margin, badgeY - 16, pageW - margin, badgeY - 16);
+
+  // Extra packet pages — structure only; proprietary wording greyed / illegible
+  const extras = buildExtraBlocks({
+    customerName,
+    jobName,
+    dateLabel,
+    deposit: money(deposit),
+    sf,
+    color,
+    baseCoatColor,
+    scope,
+  });
+
+  extras.forEach((section) => {
+    doc.addPage();
+    doc.setFillColor(...PAGE);
+    doc.rect(0, 0, pageW, pageH, "F");
+
+    doc.setFillColor(...INK);
+    doc.rect(0, 0, pageW, 28, "F");
+    doc.setTextColor(...RIDGE);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(8);
+    doc.text("✓", margin, 18);
+    doc.setTextColor(244, 240, 234);
+    doc.text("RIDGELINE COATINGS  ·  CUSTOMER PACKET", margin + 12, 18);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(7.5);
+    doc.text("Proprietary language redacted in FGP preview", pageW - margin, 18, { align: "right" });
+
+    let ey = 56;
+    doc.setTextColor(...RIDGE);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(8);
+    doc.text(String(section.kicker || "").toUpperCase(), margin, ey);
+
+    ey += 18;
+    doc.setTextColor(...INK);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(20);
+    doc.text(section.title, margin, ey);
+
+    ey += 14;
+    doc.setDrawColor(...LINE);
+    doc.line(margin, ey, pageW - margin, ey);
+    ey += 18;
+
+    // Readable blanks only
+    if (section.filled.length) {
+      doc.setFillColor(...CREAM);
+      doc.setDrawColor(...LINE);
+      const blankH = 16 + section.filled.length * 16;
+      doc.roundedRect(margin, ey, contentW, blankH, 8, 8, "FD");
+      section.filled.forEach((blank, i) => {
+        const by = ey + 14 + i * 16;
+        doc.setTextColor(...MUTED);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(8);
+        doc.text(`${blank.label}:`, margin + 12, by);
+        doc.setTextColor(...INK);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(10);
+        doc.text(String(blank.value), margin + 88, by);
+      });
+      ey += blankH + 16;
+    }
+
+    // Greyed body — shape of legal copy, not legible IP
+    doc.setTextColor(...GREYED);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8.5);
+    section.lines.forEach((line) => {
+      doc.text(line, margin, ey);
+      ey += 13;
+    });
+    ey += 8;
+
+    section.numbered.forEach((item) => {
+      if (ey > pageH - 56) return;
+      doc.setTextColor(...GREYED);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(8.5);
+      doc.text(`${item.n}.`, margin, ey);
+      doc.setFont("helvetica", "normal");
+      const wrapped = doc.splitTextToSize(item.text, contentW - 18);
+      doc.text(wrapped, margin + 16, ey);
+      ey += wrapped.length * 11 + 8;
+    });
+
+    doc.setTextColor(...MUTED);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    doc.text(
+      "Full wording ships from your private ServiceM8 / contractor template — not stored in FGP.",
+      margin,
+      pageH - 28
+    );
+  });
 
   const blob = doc.output("blob");
   return URL.createObjectURL(blob);

@@ -754,7 +754,7 @@ h3 { font-size: 18px; letter-spacing: -0.02em; font-weight: 700; }
 
 .lightbox-card.quote-doc {
   width: min(540px, 100%);
-  max-height: min(90vh, 860px);
+  max-height: min(92vh, 960px);
   overflow-y: auto;
   padding: 0 0 22px;
 }
@@ -882,6 +882,106 @@ h3 { font-size: 18px; letter-spacing: -0.02em; font-weight: 700; }
   font-weight: 600;
   line-height: 1.4;
   max-width: 12rem;
+}
+
+.quote-extras {
+  margin: var(--space-4) var(--space-5) var(--space-3);
+  display: grid;
+  gap: var(--space-3);
+}
+
+.quote-extras-note {
+  margin: 0;
+  color: #9a9186;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.quote-extra-card {
+  border: 1px solid #ebe4da;
+  border-radius: 14px;
+  background: #fffcf8;
+  padding: 14px 14px 12px;
+}
+
+.quote-extra-card header {
+  margin-bottom: 10px;
+}
+
+.quote-extra-card header span {
+  display: block;
+  color: #c48d57;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.quote-extra-card header strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #111;
+}
+
+.quote-extra-blanks {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #f7f2eb;
+  border: 1px solid #ebe4da;
+}
+
+.quote-extra-blanks div {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.quote-extra-blanks span {
+  color: #7a7268;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  min-width: 5.5rem;
+}
+
+.quote-extra-blanks strong {
+  color: #111;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.quote-extra-greyed {
+  margin: 0;
+  color: #d2cbc2;
+  font-size: 11px;
+  line-height: 1.55;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  user-select: none;
+  filter: blur(1.15px);
+  -webkit-user-select: none;
+}
+
+.quote-extra-olist {
+  margin: 8px 0 0;
+  padding-left: 1.1rem;
+  color: #d2cbc2;
+  font-size: 11px;
+  line-height: 1.5;
+  user-select: none;
+  filter: blur(1.15px);
+}
+
+.quote-extra-olist li {
+  margin-bottom: 6px;
 }
 
 .quote-finish-strip {

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import PlansModal from "./PlansModal.jsx";
 import { buildQuotePdfBlobUrl } from "./quotePdf.js";
+import { buildExtraBlocks } from "./quoteExtras.js";
 import {
   BASE_COAT_COLOR_OPTIONS,
   BASE_PRODUCT_OPTIONS,
@@ -1233,6 +1234,56 @@ export default function FreeCalculator({ onOpenStore, membershipTier: membership
                 className="quote-pl-badge"
               />
               <span>Floorguard Certified Installer · trained on FGP systems</span>
+            </div>
+
+            <div className="quote-extras">
+              <p className="quote-extras-note">
+                Packet extras (process, terms, warranty, disclaimer) — blanks filled; proprietary wording greyed so it isn’t readable in this FGP preview.
+              </p>
+              {buildExtraBlocks({
+                customerName,
+                jobName,
+                dateLabel: new Date().toLocaleDateString("en-US", {
+                  month: "long",
+                  day: "numeric",
+                  year: "numeric",
+                }),
+                deposit: money(deposit),
+                sf: results.totals.sf,
+                color: answers.color,
+                baseCoatColor: answers.baseCoatColor,
+                scope: workOrderScope.trim(),
+                system: results.system?.code || results.system?.name,
+              }).map((section) => (
+                <section key={section.id} className="quote-extra-card">
+                  <header>
+                    <span>{section.kicker}</span>
+                    <strong>{section.title}</strong>
+                  </header>
+                  {section.filled.length > 0 && (
+                    <div className="quote-extra-blanks">
+                      {section.filled.map((blank) => (
+                        <div key={`${section.id}-${blank.label}`}>
+                          <span>{blank.label}</span>
+                          <strong>{blank.value}</strong>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {section.lines.map((line, i) => (
+                    <p key={`${section.id}-p-${i}`} className="quote-extra-greyed" aria-hidden="true">
+                      {line}
+                    </p>
+                  ))}
+                  {section.numbered.length > 0 && (
+                    <ol className="quote-extra-olist" aria-hidden="true">
+                      {section.numbered.map((item) => (
+                        <li key={`${section.id}-n-${item.n}`}>{item.text}</li>
+                      ))}
+                    </ol>
+                  )}
+                </section>
+              ))}
             </div>
 
             <div className="quote-pdf-toggle">
