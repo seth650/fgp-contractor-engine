@@ -1239,13 +1239,13 @@ export default function FreeCalculator({ onOpenStore, membershipTier: membership
               <button
                 type="button"
                 className={showPdfPreview ? "chip on" : "chip"}
-                onClick={() => {
+                onClick={async () => {
                   if (showPdfPreview) {
                     setShowPdfPreview(false);
                     return;
                   }
                   if (pdfUrl) URL.revokeObjectURL(pdfUrl);
-                  const url = buildQuotePdfBlobUrl({
+                  const url = await buildQuotePdfBlobUrl({
                     customerName,
                     jobName,
                     dateLabel: new Date().toLocaleDateString("en-US", {
@@ -1257,6 +1257,8 @@ export default function FreeCalculator({ onOpenStore, membershipTier: membership
                     sf: results.totals.sf,
                     color: answers.color,
                     baseCoatColor: answers.baseCoatColor,
+                    flakeHex: STOCKED_COLORS.find((c) => c.value === answers.color)?.hex || "#888",
+                    baseHex: BASE_COAT_COLOR_OPTIONS.find((c) => c.value === answers.baseCoatColor)?.hex || "#ccc",
                     deposit,
                     depositLabel,
                     balanceDue,
