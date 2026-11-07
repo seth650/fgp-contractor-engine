@@ -74,7 +74,7 @@ function PhoneShell({ title, children, footer }) {
         <div className="phone-notch" aria-hidden="true" />
         <div className="phone-screen">
           <header className="phone-brand">
-            <img src="/brand/fgp-logo-white.svg" alt="FloorGuard Products" className="phone-logo" />
+            <img src="/brand/fgp-mark-white.png" alt="FloorGuard Products" className="phone-logo" />
             <span>Contractor tools</span>
           </header>
           <div className="phone-scroll">{children}</div>

@@ -182,7 +182,7 @@ export default function App() {
         <section className="laptop">
           <aside>
             <div className="mark">
-              <img src="/brand/fgp-logo-white.svg" alt="FloorGuard Products" className="aside-logo" />
+              <img src="/brand/fgp-mark-white.png" alt="FloorGuard Products" className="aside-logo" />
               <strong>{mode === "store" ? "Midwest" : "Network"}</strong>
             </div>
             <nav>
