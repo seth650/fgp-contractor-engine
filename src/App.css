@@ -397,13 +397,20 @@ h3 { font-size: 18px; letter-spacing: -0.02em; font-weight: 700; }
 
 .job-head strong {
   display: block;
-  font-family: var(--name);
-  font-size: 26px;
-  font-weight: 400;
+  font-family: var(--font);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.job-head span { color: var(--muted); font-size: 13px; margin-top: var(--space-1); display: block; font-weight: 500; }
+
+.customer-name {
+  font-family: var(--name) !important;
+  font-weight: 400 !important;
+  font-size: 26px !important;
   letter-spacing: -0.01em;
   line-height: 1.15;
 }
-.job-head span { color: var(--muted); font-size: 13px; margin-top: var(--space-1); display: block; font-weight: 500; }
 
 .field-grid {
   display: grid;
@@ -847,6 +854,12 @@ h3 { font-size: 18px; letter-spacing: -0.02em; font-weight: 700; }
 .quote-doc-head h3 {
   margin-top: var(--space-2);
   text-transform: none;
+  font-family: var(--font);
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.quote-doc-head h3.customer-name {
   font-family: var(--name);
   font-size: 28px;
   font-weight: 400;

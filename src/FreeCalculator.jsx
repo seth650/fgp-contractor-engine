@@ -388,7 +388,7 @@ export default function FreeCalculator({ onOpenStore, membershipTier: membership
               }
             >
               <div className="job-head">
-                <strong>{customerName || "Customer"}</strong>
+                <strong className="customer-name">{customerName || "Customer"}</strong>
                 <span>
                   {jobName || "Job"} · {sqFt || "—"} ft² · moisture {answers.moisture || "—"}
                 </span>
@@ -1164,7 +1164,7 @@ export default function FreeCalculator({ onOpenStore, membershipTier: membership
             <div className="quote-doc-head">
               <div>
                 <span>Prepared for</span>
-                <h3>{customerName}</h3>
+                <h3 className="customer-name">{customerName}</h3>
                 <p className="muted">
                   {jobName} · {new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
                 </p>
