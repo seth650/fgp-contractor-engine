@@ -1,5 +1,5 @@
-/* Montserrat for product UI. Instrument Serif reserved for people/job names only. */
-@import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap");
+/* Montserrat across product UI, including customer names. */
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap");
 
 :root {
   /* Material / Apple-aligned 8pt scale */
@@ -32,7 +32,7 @@
   --shadow-soft: 0 10px 30px rgba(14, 28, 58, 0.06);
   --font: "Montserrat", "Segoe UI", sans-serif;
   --display: "Montserrat", "Segoe UI", sans-serif;
-  --name: "Instrument Serif", Georgia, "Times New Roman", serif;
+  --name: "Montserrat", "Segoe UI", sans-serif;
   --radius-sm: 12px;
   --radius-md: 16px;
   --radius-lg: 22px;

@@ -415,12 +415,13 @@ h3 { font-size: 18px; letter-spacing: -0.02em; font-weight: 700; }
 }
 .job-head span { color: var(--muted); font-size: 13px; margin-top: var(--space-1); display: block; font-weight: 500; }
 
-.customer-name {
-  font-family: var(--name) !important;
-  font-weight: 400 !important;
-  font-size: 26px !important;
-  letter-spacing: -0.01em;
-  line-height: 1.15;
+.customer-name,
+.job-head .customer-name,
+.quote-doc-head h3.customer-name {
+  font-family: "Montserrat", "Segoe UI", sans-serif !important;
+  font-weight: 700 !important;
+  font-style: normal !important;
+  letter-spacing: -0.02em;
 }
 
 .field-grid {
@@ -942,9 +943,7 @@ h3 { font-size: 18px; letter-spacing: -0.02em; font-weight: 700; }
 }
 
 .quote-doc-head h3.customer-name {
-  font-family: var(--name);
-  font-size: 28px;
-  font-weight: 400;
+  font-size: 22px;
 }
 
 .quote-doc-total {
