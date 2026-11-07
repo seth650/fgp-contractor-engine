@@ -73,9 +73,8 @@ function PhoneShell({ title, children, footer }) {
       <div className="phone-bezel">
         <div className="phone-notch" aria-hidden="true" />
         <div className="phone-screen">
-          <header className="phone-brand phone-brand-red">
-            <img src="/brand/fgp-mark-white.png" alt="" className="phone-logo" />
-            <strong>Floorguard Products</strong>
+          <header className="phone-brand">
+            <img src="/brand/fgp-logo-white.png" alt="Floorguard Products" className="phone-wordmark" />
           </header>
           <div className="phone-scroll">{children}</div>
           {footer ? <div className="phone-footer">{footer}</div> : null}
