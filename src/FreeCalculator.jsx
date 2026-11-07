@@ -1072,7 +1072,7 @@ export default function FreeCalculator({ onOpenStore, membershipTier: membership
                   onClick={() =>
                     setLightbox({
                       title: "Print / save PO",
-                      body: "Print dialog opens from here in the next polish pass — same letter PO as ECOS.",
+                      body: "Print / save opens the purchase order for this material list.",
                     })
                   }
                 >

@@ -150,7 +150,7 @@ export default function ReportingDashboard({ view = "network" }) {
         <div>
           <div className="kicker tight">Network reporting</div>
           <h2>{view === "products" ? "Products & systems" : view === "locations" ? "Distributors" : "Network overview"}</h2>
-          <p className="muted">Year-to-date through Nov 7, 2026 · preview figures for walkthroughs.</p>
+          <p className="muted">Year-to-date through Nov 7, 2026.</p>
         </div>
         <div className="report-controls">
           <div className="period-pills" role="tablist" aria-label="Time range">
@@ -209,7 +209,7 @@ export default function ReportingDashboard({ view = "network" }) {
             </div>
           </div>
           <DepthLineChart seriesOn={seriesOn} />
-          <p className="hint micro">Values in $ thousands wholesale · Nov stubbed for month-to-date through the 7th.</p>
+          <p className="hint micro">Wholesale $ thousands · November through the 7th.</p>
         </article>
       )}
 
