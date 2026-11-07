@@ -342,14 +342,6 @@ export async function buildQuotePdfBlobUrl({
       ey += wrapped.length * 11 + 8;
     });
 
-    doc.setTextColor(...MUTED);
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(8);
-    doc.text(
-      "Full wording ships from your private ServiceM8 / contractor template — not stored in FGP.",
-      margin,
-      pageH - 28
-    );
   });
 
   const blob = doc.output("blob");
