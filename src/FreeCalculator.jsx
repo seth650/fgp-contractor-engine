@@ -1154,38 +1154,56 @@ export default function FreeCalculator({ onOpenStore, membershipTier: membership
 
       {quotePreviewOpen && results && (
         <div className="lightbox" onClick={() => setQuotePreviewOpen(false)} role="dialog" aria-modal="true">
-          <div className="lightbox-card quote-doc" onClick={(e) => e.stopPropagation()}>
+          <div className="lightbox-card quote-doc branded" onClick={(e) => e.stopPropagation()}>
+            <div className="quote-doc-accent" aria-hidden="true" />
+            <div className="quote-doc-brandbar">
+              <img src="/brand/fgp-logo-red.png" alt="FloorGuard Products" className="quote-doc-logo" />
+              <div>
+                <span>Prepared with FloorGuard systems</span>
+                <strong>Contractor proposal</strong>
+              </div>
+            </div>
+
             <div className="quote-doc-head">
               <div>
-                <span>FloorGuard contractor quote</span>
+                <span>Prepared for</span>
                 <h3>{customerName}</h3>
                 <p className="muted">
-                  {jobName} · prepared for review
+                  {jobName} · {new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
                 </p>
               </div>
               <strong className="quote-doc-total">{money(sellPrice)}</strong>
             </div>
 
-            <div className="quote-doc-grid">
+            <div className="quote-finish-strip">
+              <div className="quote-swatch" style={{ background: STOCKED_COLORS.find((c) => c.value === answers.color)?.hex || "#888" }} />
+              <div className="quote-swatch base" style={{ background: BASE_COAT_COLOR_OPTIONS.find((c) => c.value === answers.baseCoatColor)?.hex || "#ccc" }} />
               <div>
-                <span>System</span>
-                <strong>
-                  {results.system.code} · {results.system.label || "Flake system"}
-                </strong>
-              </div>
-              <div>
-                <span>Finish</span>
                 <strong>
                   {answers.color} on {answers.baseCoatColor}
                 </strong>
+                <span>
+                  {results.system.code} · {results.system.label || "Flake system"} · {results.totals.sf} ft²
+                </span>
               </div>
+            </div>
+
+            <div className="quote-doc-grid">
               <div>
-                <span>Area</span>
-                <strong>{results.totals.sf} ft²</strong>
+                <span>Investment</span>
+                <strong>{money(sellPrice)}</strong>
               </div>
               <div>
                 <span>Per ft²</span>
                 <strong>{money(sellPrice / (results.totals.sf || 1))}</strong>
+              </div>
+              <div>
+                <span>Deposit ({depositLabel})</span>
+                <strong>{money(deposit)}</strong>
+              </div>
+              <div>
+                <span>Balance at completion</span>
+                <strong>{money(balanceDue)}</strong>
               </div>
             </div>
 
@@ -1194,23 +1212,8 @@ export default function FreeCalculator({ onOpenStore, membershipTier: membership
               <p>{workOrderScope.trim() || "— add rooms on the quote screen —"}</p>
             </div>
 
-            <dl className="cost-dl quote-dl">
-              <div>
-                <dt>Project total</dt>
-                <dd>{money(sellPrice)}</dd>
-              </div>
-              <div>
-                <dt>Deposit due ({depositLabel})</dt>
-                <dd>{money(deposit)}</dd>
-              </div>
-              <div>
-                <dt>Balance at completion</dt>
-                <dd>{money(balanceDue)}</dd>
-              </div>
-            </dl>
-
             <p className="hint micro">
-              Sandbox preview — branded PDF / customer portal lands with Estimator.
+              Branded customer PDF / portal polish continues tomorrow — this preview is the handoff layout.
             </p>
             <div className="action-row">
               <button type="button" className="ghost" onClick={() => setQuotePreviewOpen(false)}>
@@ -1218,7 +1221,7 @@ export default function FreeCalculator({ onOpenStore, membershipTier: membership
               </button>
               <button
                 type="button"
-                className="primary navy"
+                className="primary"
                 disabled={!scopeFilled}
                 onClick={() => {
                   setQuotePreviewOpen(false);

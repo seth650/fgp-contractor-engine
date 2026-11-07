@@ -1,12 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import FreeCalculator from "./FreeCalculator.jsx";
+import ReportingDashboard from "./ReportingDashboard.jsx";
 import {
   CONTRACTORS,
-  LOCATIONS,
-  NETWORK,
   ORDER_SPARK,
   ORDER_STATUSES,
-  PRODUCTS,
   STORE_ORDERS,
   money,
 } from "./data.js";
@@ -61,7 +59,6 @@ export default function App() {
   const [toast, setToast] = useState("");
   const [liveOrder, setLiveOrder] = useState(null);
   const [orders, setOrders] = useState(STORE_ORDERS);
-  const maxLocation = Math.max(...LOCATIONS.map((row) => row.amount));
   const modeMeta = MODES.find((item) => item.id === mode);
 
   const displayOrders = useMemo(
@@ -358,91 +355,8 @@ export default function App() {
               </>
             )}
 
-            {mode === "floorguard" && panel === "network" && (
-              <>
-                <div className="kpis">
-                  {NETWORK.map((item) => (
-                    <article key={item.label} className="kpi">
-                      <span>{item.label}</span>
-                      <strong>{item.value}</strong>
-                      <Spark values={item.spark} />
-                      <em>{item.note}</em>
-                    </article>
-                  ))}
-                </div>
-                <div className="grid-2">
-                  <article>
-                    <div className="kicker">Orders by location</div>
-                    <h2>Where the orders landed</h2>
-                    <ul className="bars">
-                      {LOCATIONS.map((row) => (
-                        <li key={row.name}>
-                          <span>{row.name}</span>
-                          <div>
-                            <i style={{ width: `${(row.amount / maxLocation) * 100}%` }} />
-                          </div>
-                          <b>{money(row.amount)}</b>
-                        </li>
-                      ))}
-                    </ul>
-                  </article>
-                  <article>
-                    <div className="kicker">Systems in quotes</div>
-                    <h2>What contractors are selling</h2>
-                    <ul className="lines">
-                      {PRODUCTS.map((row) => (
-                        <li key={row.name}>
-                          <div>
-                            <strong>{row.name}</strong>
-                            <span>Share of sample quotes</span>
-                          </div>
-                          <b>{row.share}</b>
-                        </li>
-                      ))}
-                    </ul>
-                  </article>
-                </div>
-                <p className="legal">
-                  Corporate admin tools are coming. This view stays FloorGuard-corporate — not one store peeking at another’s customers —
-                  unless a written agreement says otherwise.
-                </p>
-              </>
-            )}
-
-            {mode === "floorguard" && panel === "locations" && (
-              <article>
-                <div className="kicker">Orders by location</div>
-                <h2>All sixteen would live here</h2>
-                <ul className="bars">
-                  {LOCATIONS.map((row) => (
-                    <li key={row.name}>
-                      <span>{row.name}</span>
-                      <div>
-                        <i style={{ width: `${(row.amount / maxLocation) * 100}%` }} />
-                      </div>
-                      <b>{money(row.amount)}</b>
-                    </li>
-                  ))}
-                </ul>
-              </article>
-            )}
-
-            {mode === "floorguard" && panel === "products" && (
-              <article>
-                <div className="kicker">Systems in quotes</div>
-                <h2>Which FloorGuard systems are being sold</h2>
-                <ul className="lines">
-                  {PRODUCTS.map((row) => (
-                    <li key={row.name}>
-                      <div>
-                        <strong>{row.name}</strong>
-                        <span>Share of sample quotes</span>
-                      </div>
-                      <b>{row.share}</b>
-                    </li>
-                  ))}
-                </ul>
-              </article>
+            {mode === "floorguard" && (panel === "network" || panel === "locations" || panel === "products") && (
+              <ReportingDashboard view={panel} />
             )}
           </div>
         </section>
